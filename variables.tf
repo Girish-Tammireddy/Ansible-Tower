@@ -17,24 +17,6 @@ variable "common_tags" {
   default     = {}
 }
 
-variable "redis_cache_size" {
-  type        = string
-  default     = "cache.m4.large"
-  description = "Redis instance size."
-}
-
-variable "redis_engine_version" {
-  type        = string
-  default     = "5.0.6"
-  description = "Redis enginer version."
-}
-
-variable "redis_parameter_group_name" {
-  type        = string
-  default     = "default.redis5.0"
-  description = "Redis parameter group name."
-}
-
 variable "db_size" {
   type        = string
   default     = "db.m4.xlarge"
@@ -69,12 +51,6 @@ variable "network_id" {
   type        = string
 }
 
-variable "bastion_host_subnet" {
-  default     = ""
-  description = "The identity of the subnetwork in which the bastion EC2 instance will be deployed."
-  type        = string
-}
-
 variable "network_private_subnets" {
   default     = []
   description = "A list of the identities of the private subnetworks in which resources will be deployed."
@@ -89,8 +65,8 @@ variable "network_public_subnets" {
 
 variable "node_count" {
   type        = number
-  default     = 2
-  description = "The number of nodes you want in your autoscaling group (1 for standalone, 2 for active-active configuration)"
+  default     = 3
+  description = "The number of nodes you want in your autoscaling group (1 for standalone, 3 for active-active configuration)"
 
   validation {
     condition     = var.node_count <= 5
@@ -104,34 +80,10 @@ variable "ssl_policy" {
   description = "SSL policy to use on ALB listener"
 }
 
-variable "tfe_subdomain" {
+variable "ansible_subdomain" {
   type        = string
-  default     = "tfe"
+  default     = "ansible"
   description = "Subdomain for accessing the Terraform Enterprise UI."
-}
-
-variable "tfe_license_name" {
-  type        = string
-  default     = "ptfe-license.rli"
-  description = "The name to use when copying the TFE license file to the EC2 instance."
-}
-
-variable "tfe_license_filepath" {
-  description = "The pathname of the TFE license file on the system running Terraform."
-  type        = string
-}
-
-# KMS
-variable "kms_key_alias" {
-  type        = string
-  description = "KMS key alias for AWS KMS Customer managed key."
-  default     = "tfe-managed-kms"
-}
-
-variable "kms_key_deletion_window" {
-  type        = number
-  description = "(Optional) Duration in days to destroy the key after it is deleted. Must be between 7 and 30 days."
-  default     = 7
 }
 
 # Secrets Manager
@@ -184,36 +136,6 @@ variable "admin_dashboard_ingress_ranges" {
   default     = ["0.0.0.0/0"]
 }
 
-# Bastion
-variable "deploy_bastion" {
-  type        = bool
-  description = "(Optional) Boolean indicating whether to deploy a Bastion instance (true) or not (false). Only specify true if deploy_vpc is true."
-  default     = true
-}
-
-variable "bastion_keypair" {
-  type        = string
-  description = "(Optional) Specifies existing SSH key pair to use for Bastion instance. Only specify if deploy_bastion is true."
-  default     = null
-}
-
-variable "bastion_ingress_cidr_allow" {
-  type        = list(string)
-  description = "(Optional) List of CIDR ranges to allow SSH ingress to Bastion instance. Only specify if deploy_bastion is true."
-  default     = ["0.0.0.0/0"]
-}
-
-variable "bastion_key_private" {
-  type        = string
-  description = "(Optional) Private key for existing bastion host. Only specify if deploy_bastion is false."
-  default     = ""
-}
-
-variable "bastion_sg" {
-  type        = string
-  description = "(Optional) Security group id for bastion security group to allow traffic between bastion and nodes. Only specify if deploy_bastion is false."
-  default     = ""
-}
 
 # PROXY SETTINGS
 
@@ -241,21 +163,3 @@ variable "no_proxy" {
   default     = []
 }
 
-# Redis
-variable "redis_encryption_in_transit" {
-  type        = bool
-  description = "Determine whether Redis traffic is encrypted in transit."
-  default     = false
-}
-
-variable "redis_encryption_at_rest" {
-  type        = bool
-  description = "Determine whether Redis data is encrypted at rest."
-  default     = false
-}
-
-variable "redis_require_password" {
-  type        = bool
-  description = "Determine if a password is required for Redis."
-  default     = false
-}
