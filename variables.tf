@@ -3,7 +3,7 @@
 variable "ami_id" {
   type        = string
   default     = ""
-  description = "AMI ID to use for TFE instances and bastion host"
+  description = "AMI ID to use for Ansible instances"
 }
 
 variable "acm_certificate_arn" {
